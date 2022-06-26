@@ -1,4 +1,4 @@
-#CO group assignement
+#CO group assignement.
 There are a total of five questions in this assignment:
 1. Designing and Implementing the assembler.
 2. Designing and Implementing the simulator.
