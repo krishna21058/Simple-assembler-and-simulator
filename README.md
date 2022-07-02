@@ -1,4 +1,10 @@
 #CO group assignement.
+
+Group Members:
+Krishna Somani  2021058  krishna21058@iiitd.ac.in
+Lakshay Chauhan 2021060  lakshay21060@iiitd.ac.in
+Lakshay Kumar   2021061  lakshay21061@iiitd.ac.in
+
 There are a total of five questions in this assignment:
 1. Designing and Implementing the assembler.
 2. Designing and Implementing the simulator.
