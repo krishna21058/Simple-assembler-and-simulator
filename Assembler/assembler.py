@@ -1,50 +1,66 @@
-import re
+import sys
 
-file = open("stdin.txt", "r")
+file = open("trial.txt", "r")
 commands = []
 for line in file.readlines():
     if line[-1] == "\n":
-        # commands.append(line[:-1].split(" "))
-        commands.append(re.split(r' |\t', line[:-1]))
+        commands.append(line[:-1].split())
     else:
-        # commands.append(line.split(" "))
-        commands.append(re.split(r' |\t', line))
+        commands.append(line.split())
 
-orginal_list = commands.copy()
+original_list = commands.copy()
+noCommands = len(commands)
+
+commands = [i for i in commands if i != []]
 noCommands = len(commands)
 
 # for keeping track of line numbers
 lineNo = []
 num = 1
-for i in commands:
-    if i != [""] and i[0] != "var":
-        lineNo.append(num)
+# print(original_list)
+for i in original_list:
+    if i != []:
+        if i != [""] and i[0] != "var":
+            lineNo.append(num)
     num += 1
-
+# print(lineNo)
 labels = {}
 noVars = 0
 vars = {}
 
-# removing "" from commands
-commands = [i for i in commands if i != [""]]
-noCommands = len(commands)
-
 varFlag = False
 varRaiseError = False
-for i in range(noCommands):
-    if commands[i][0] == "var":
+varMultiError = False
+labelError = False
+for i in range(len(original_list)):
+    if original_list[i] == []: continue
+    if original_list[i][0] == "var":
         if varFlag == False:
-            vars[commands[i][1]] = 0
+            if original_list[i][1] not in vars:
+                vars[original_list[i][1]] = 0
+            else:
+                varMultiError = i
+                break
         else:
             varRaiseError = i
-    elif commands[i][0][-1] == ":":
-        labels[commands[i][0][:-1]] = i
-        commands[i] = commands[i][1:]
+            break
+    elif original_list[i][0][-1] == ":":
+        if original_list[i][0][:-1] not in labels:
+            labels[original_list[i][0][:-1]] = i
+        else:
+            labelError = i
+            break
     else : 
         varFlag = True
 
-commands = [i for i in commands if i != []]
+for i in range(noCommands):
+    if commands[i][0][-1] == ":":
+        commands[i] = commands[i][1:]
+
+# removing "" from commands
+commands = [i for i in commands if i != [""] and i!=[]]
 noCommands = len(commands)
+
 
 # removing vars from commands
 commands = [i for i in commands if i[0] != "var"]
@@ -152,7 +168,7 @@ def typeB(command: list):
         num = int(command[2][1:])
     except:
         return ["Error", "Invalid immediate value"]
-    if num < -128 or num > 127:
+    if num < 0 or num > 255:
             return ["Error", "Illegal immediate value"]
     out.append(decimalToBinary(num))
     return out
@@ -214,23 +230,32 @@ output = []
 
 wee = 0
 for i in commands:
+    # print(wee, lineNo[wee], i)
     pc = lineNo[wee]
     wee += 1
     if varRaiseError != False:
         error = True
         print(f"Error @Line{varRaiseError+1}: Variables must be defined at the very beginning")
         break
+    if varMultiError != False:
+        error = True
+        print(f"Error @Line{varMultiError+1}: Duplicate variable found")
+        break
+    if labelError != False:
+        error = True
+        print(f"Error @Line{labelError+1}: Duplicate label found")
+        break
     if hltMissingRaiseError:
         error = True
-        print(f"Error @Line{len(orginal_list)}: Missing hlt instruction")
+        print(f"Error @Line{len(original_list)}: Missing hlt instruction")
         break
     if hltRaiseError:
         error = True
-        print(f"Error @Line{len(orginal_list)}: Hlt not being used as the last instruction")
+        print(f"Error @Line{len(original_list)}: Hlt not being used as the last instruction")
         break
     if hltMultipleRaiseError:
         error = True
-        print(f"Error @Line{len(orginal_list)}: Multiple hlt instructions not allowed")
+        print(f"Error @Line{len(original_list)}: Multiple hlt instructions not allowed")
         break
     if i[0] in type[0]:
         out = typeA(i)
@@ -310,5 +335,6 @@ for i in commands:
 if error == False:
     out = open("stdout.bin", "wb")
     for i in output:
-        out.write(str.encode(i+"\n"))
+        sys.stdout.write(i+"\n")
+        # out.write(str.encode(i+"\n"))
     out.close()
