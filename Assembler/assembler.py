@@ -1,12 +1,9 @@
 import sys
 
-file = open("trial.txt", "r")
+input = sys.stdin.read().split("\n")[:-1]
 commands = []
-for line in file.readlines():
-    if line[-1] == "\n":
-        commands.append(line[:-1].split())
-    else:
-        commands.append(line.split())
+for i in input:
+    commands.append(i.split())
 
 original_list = commands.copy()
 noCommands = len(commands)
@@ -61,7 +58,6 @@ for i in range(noCommands):
 commands = [i for i in commands if i != [""] and i!=[]]
 noCommands = len(commands)
 
-
 # removing vars from commands
 commands = [i for i in commands if i[0] != "var"]
 noCommands = len(commands)
@@ -75,10 +71,10 @@ error = False
 if commands.count(["hlt"]) > 1:
     hltMultipleRaiseError = True
 
-zee = 0
-for i in vars:
-    vars[i] = noCommands+zee
-    zee += 1
+# zee = 0
+# for i in vars:
+#     vars[i] = noCommands+zee
+#     zee += 1
 
 def decimalToBinary(n):
     b = bin(n).replace('0b', '')
