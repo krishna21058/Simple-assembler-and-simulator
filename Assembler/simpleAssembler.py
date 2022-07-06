@@ -336,8 +336,5 @@ for i in commands:
     pc += 1
 
 if error == False:
-    out = open("stdout.bin", "wb")
     for i in output:
         sys.stdout.write(i+"\n")
-        # out.write(str.encode(i+"\n"))
-    out.close()
