@@ -14,13 +14,13 @@ noCommands = len(commands)
 # for keeping track of line numbers
 lineNo = []
 num = 1
-# print(original_list)
+# sys.stdout.write(original_list)
 for i in original_list:
     if i != []:
         if i != [""] and i[0] != "var":
             lineNo.append(num)
     num += 1
-# print(lineNo)
+# sys.stdout.write(lineNo)
 labels = {}
 noVars = 0
 vars = {}
@@ -29,6 +29,7 @@ varFlag = False
 varRaiseError = False
 varMultiError = False
 labelError = False
+gwee = 0
 for i in range(len(original_list)):
     if original_list[i] == []: continue
     if original_list[i][0] == "var":
@@ -43,11 +44,13 @@ for i in range(len(original_list)):
             break
     elif original_list[i][0][-1] == ":":
         if original_list[i][0][:-1] not in labels:
-            labels[original_list[i][0][:-1]] = i
+            labels[original_list[i][0][:-1]] = gwee
+            gwee += 1
         else:
             labelError = i
             break
     else : 
+        gwee += 1
         varFlag = True
 
 for i in range(noCommands):
@@ -71,10 +74,10 @@ error = False
 if commands.count(["hlt"]) > 1:
     hltMultipleRaiseError = True
 
-# zee = 0
-# for i in vars:
-#     vars[i] = noCommands+zee
-#     zee += 1
+zee = 0
+for i in vars:
+    vars[i] = noCommands+zee
+    zee += 1
 
 def decimalToBinary(n):
     b = bin(n).replace('0b', '')
@@ -226,47 +229,51 @@ output = []
 
 wee = 0
 for i in commands:
-    # print(wee, lineNo[wee], i)
+    # sys.stdout.write(wee, lineNo[wee], i)
     pc = lineNo[wee]
     wee += 1
     if varRaiseError != False:
         error = True
-        print(f"Error @Line{varRaiseError+1}: Variables must be defined at the very beginning")
+        sys.stdout.write(f"Error @Line{varRaiseError+1}: Variables must be defined at the very beginning")
         break
     if varMultiError != False:
         error = True
-        print(f"Error @Line{varMultiError+1}: Duplicate variable found")
+        sys.stdout.write(f"Error @Line{varMultiError+1}: Duplicate variable found")
         break
     if labelError != False:
         error = True
-        print(f"Error @Line{labelError+1}: Duplicate label found")
+        sys.stdout.write(f"Error @Line{labelError+1}: Duplicate label found")
         break
     if hltMissingRaiseError:
         error = True
-        print(f"Error @Line{len(original_list)}: Missing hlt instruction")
+        sys.stdout.write(f"Error @Line{len(original_list)}: Missing hlt instruction")
         break
     if hltRaiseError:
         error = True
-        print(f"Error @Line{len(original_list)}: Hlt not being used as the last instruction")
+        sys.stdout.write(f"Error @Line{len(original_list)}: Hlt not being used as the last instruction")
         break
     if hltMultipleRaiseError:
         error = True
-        print(f"Error @Line{len(original_list)}: Multiple hlt instructions not allowed")
+        sys.stdout.write(f"Error @Line{len(original_list)}: Multiple hlt instructions not allowed")
         break
     if i[0] in type[0]:
         out = typeA(i)
         if out[0] == "Error":
             error = True
-            print(f"Error @Line{pc}: "+out[1])
+            sys.stdout.write(f"Error @Line{pc}: "+out[1])
             break
         else:
             output.append("".join(out))
     elif i[0] == "mov":
+        if len(i) != 3:
+            error = True
+            sys.stdout.write(f"Error @Line{pc}: General syntax error")
+            break
         if i[2][0] == "$":
             out = typeB(i)
             if out[0] == "Error":
                 error = True
-                print(f"Error @Line{pc}: "+out[1])
+                sys.stdout.write(f"Error @Line{pc}: "+out[1])
                 break
             else:
                 output.append("".join(out))
@@ -274,19 +281,19 @@ for i in commands:
             out = typeC(i)
             if out[0] == "Error":
                 error = True
-                print(f"Error @Line{pc}: "+out[1])
+                sys.stdout.write(f"Error @Line{pc}: "+out[1])
                 break
             else:
                 output.append("".join(out))
         else:
             error = True
-            print(f"Error @Line{pc}: Wrong Syntax")
+            sys.stdout.write(f"Error @Line{pc}: Wrong Syntax")
             break
     elif i[0] in type[1]:
         out = typeB(i)
         if out[0] == "Error":
             error = True
-            print(f"Error @Line{pc}: "+out[1])
+            sys.stdout.write(f"Error @Line{pc}: "+out[1])
             break
         else:
             output.append("".join(out))
@@ -294,7 +301,7 @@ for i in commands:
         out = typeC(i)
         if out[0] == "Error":
             error = True
-            print(f"Error @Line{pc}: "+out[1])
+            sys.stdout.write(f"Error @Line{pc}: "+out[1])
             break
         else:
             output.append("".join(out))
@@ -302,7 +309,7 @@ for i in commands:
         out = typeD(i)
         if out[0] == "Error":
             error = True
-            print(f"Error @Line{pc}: "+out[1])
+            sys.stdout.write(f"Error @Line{pc}: "+out[1])
             break
         else:
             output.append("".join(out))
@@ -310,7 +317,7 @@ for i in commands:
         out = typeE(i)
         if out[0] == "Error":
             error = True
-            print(f"Error @Line{pc}: "+out[1])
+            sys.stdout.write(f"Error @Line{pc}: "+out[1])
             break
         else:
             output.append("".join(out))
@@ -318,13 +325,13 @@ for i in commands:
         out = typeF(i)
         if out[0] == "Error":
             error = True
-            print(f"Error @Line{pc}: "+out[1])
+            sys.stdout.write(f"Error @Line{pc}: "+out[1])
             break
         else:
             output.append("".join(out))
     else:
         error = True
-        print(f"Error @Line{pc}: General syntax error")
+        sys.stdout.write(f"Error @Line{pc}: General syntax error")
         break 
     pc += 1
 
