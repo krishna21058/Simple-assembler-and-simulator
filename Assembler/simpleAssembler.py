@@ -29,6 +29,7 @@ varFlag = False
 varRaiseError = False
 varMultiError = False
 labelError = False
+labelEmptyError = False
 gwee = 0
 for i in range(len(original_list)):
     if original_list[i] == []: continue
@@ -44,6 +45,10 @@ for i in range(len(original_list)):
             break
     elif original_list[i][0][-1] == ":":
         if original_list[i][0][:-1] not in labels:
+            if len(original_list[i]) == 1:
+                labelEmptyError = gwee
+                gwee += 1
+                break
             labels[original_list[i][0][:-1]] = gwee
             gwee += 1
         else:
@@ -243,6 +248,10 @@ for i in commands:
     if labelError != False:
         error = True
         sys.stdout.write(f"Error @Line{labelError+1}: Duplicate label found")
+        break
+    if labelEmptyError != False:
+        error = True
+        sys.stdout.write(f"Error @Line{labelEmptyError+1}: Empty label body found")
         break
     if hltMissingRaiseError:
         error = True
