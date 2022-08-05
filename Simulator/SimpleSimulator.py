@@ -14,45 +14,42 @@ opcode = [
     ["01010"]
 ]
 
-def decimalToBinary(n):
+def decimalToBinary(n, limit: int):
     b = bin(n).replace('0b', '')
-    while len(b) < 8:
+    while len(b) < limit:
         b = '0'+b
     return b
+
+def print_reg():
+    gwee = 0
+    for i in reg.values():
+        if gwee == 7:
+            print(decimalToBinary(i, 16))
+        else:
+            print(decimalToBinary(i, 16), end = " ")
+            gwee += 1
 
 def dkdk(command: str, pc: str):
     print(pc, end = " ")
     code = command[:5]
     if code in opcode[0]:
         typeA(command)
-        for j in reg.values():
-            print(decimalToBinary(j), end = " ")
-        print()
+        print_reg()  
     elif code in opcode[1]:
         typeB(command)
-        for j in reg.values():
-            print(decimalToBinary(j), end = " ")
-        print()
+        print_reg()
     elif code in opcode[2]:
         typeC(command)
-        for j in reg.values():
-            print(decimalToBinary(j), end = " ")
-        print()
+        print_reg()
     elif code in opcode[3]:
         typeD(command)
-        for j in reg.values():
-            print(decimalToBinary(j), end = " ")
-        print()
+        print_reg()
     elif code in opcode[4]:
-        for j in reg.values():
-            print(decimalToBinary(j), end = " ")
-        print()
+        print_reg()
         typeE(command, pc)
     else:
         flags["done"] = 1
-        for j in reg.values():
-            print(decimalToBinary(j), end = " ")
-        print()
+        print_reg()
 
 def typeA(command: str):
     code = command[:5]
@@ -139,14 +136,14 @@ def typeE(command: str, pc: str):
             flags["mem"] = mem
 
 def main(pc: str):
-    while pc != decimalToBinary(len(input)):
+    while pc != decimalToBinary(len(input), 8):
         line = input[int(pc, 2)]
         flags["mem"] = pc
         pre_mem = flags["mem"]
         dkdk(line, pc)
         if pre_mem != flags["mem"]:
             pc = flags["mem"]
-        pc = decimalToBinary(int(pc, 2)+1)
+        pc = decimalToBinary(int(pc, 2)+1, 8)
         if flags["done"] == 1:
             break
     for line in input:
