@@ -1,14 +1,14 @@
 from hashlib import new
 import math
-# mem=input("Space in memory :: ")
-# adr=input("Type of memory addressed :: ")
-# length=int(input("lenght of instruction :: "))
-# reg=int(input("length of register :: "))
+mem=input("Space in memory :: ")
+adr=input("Type of memory addressed :: ")
+length=int(input("lenght of instruction :: "))
+reg=int(input("length of register :: "))
 
-mem=input()
-adr=input()
-length=int(input())
-reg=int(input())
+# mem=input()
+# adr=input()
+# length=int(input())
+# reg=int(input())
 
 mems=mem.split()
 adrs=adr.split()
@@ -49,14 +49,14 @@ newadrtypel=changeto.split()
 
 pin=adrl[adrs[0]]-adrl[newadrtypel[0]]
 
-# cpubit=int(input("Cpu bit :: "))
-# pins=int(input("pins :: "))
-# typeme=input(" Type of memory addressable :: ")
+cpubit=int(input("Cpu bit :: "))
+pins=int(input("pins :: "))
+typeme=input(" Type of memory addressable :: ")
 
 
-cpubit=int(input())
-pins=int(input())
-typeme=input()
+# cpubit=int(input())
+# pins=int(input())
+# typeme=input()
 typemes=typeme.split()
 adrl["word"]=math.ceil(math.log2(cpubit))
 memorysize=(2**pins)*(2**(adrl[typemes[0]]))/8
