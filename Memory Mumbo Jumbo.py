@@ -53,14 +53,12 @@ cpubit=int(input("Cpu bit :: "))
 pins=int(input("pins :: "))
 typeme=input(" Type of memory addressable :: ")
 
-
 # cpubit=int(input())
 # pins=int(input())
 # typeme=input()
 typemes=typeme.split()
 adrl["word"]=math.ceil(math.log2(cpubit))
 memorysize=(2**pins)*(2**(adrl[typemes[0]]))/8
-
 
 print("\n\t\t\tType 1")
 print("Mddress pins are saved or required :: ",end= " ")
@@ -69,6 +67,3 @@ print("\n\t\t\tType 2")
 print("Main memory in Bytes :: ",(memorysize),"B")
 print("Main memory in Bytes :: 2**(",math.log2(memorysize),") B")
 print("\n----------------------------------------------------------------")
-
-
-
