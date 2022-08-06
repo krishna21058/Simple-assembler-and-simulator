@@ -121,7 +121,13 @@ def typeA(command: str):
         reg[r1] = reg[r2]|reg[r3]
     elif code == "00000":
         #addf
-        reg[r3] = float_dec2bin(float_bin2dec(reg[r1])+float_bin2dec(reg[r2]))
+        v1 = float_bin2dec(reg[r1])
+        v2 = float_bin2dec(reg[r2])
+        if v1 < v2:
+            reg[r3] = "0000000000000000"
+            reg["111"] = 8
+        else:
+            reg[r3] = float_dec2bin(float_bin2dec(reg[r1])+float_bin2dec(reg[r2]))
     elif code == "00001":
         #subf
         v1 = float_bin2dec(reg[r1])
