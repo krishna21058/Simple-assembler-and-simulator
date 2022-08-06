@@ -97,11 +97,14 @@ type = [
         "mul": "10110",
         "xor": "11010",
         "or": "11011",
-        "and": "11100" 
+        "and": "11100",
+        "addf": "00000",
+        "subf": "00001"
     }, {
         "mov": "10010",
         "rs": "11000",
-        "ls": "11001"
+        "ls": "11001",
+        "movf": "00010"
     }, {
         "mov": "10011",
         "div": "10111",
@@ -130,6 +133,37 @@ regMem = {
     "R6": "110",
     "FLAGS": "111"
 }
+
+def float_bin(number):
+    num, dec = str(number).split(".")
+    num = int(num)
+    dec = int (dec)
+    res = bin(num).lstrip("0b") + "."
+    n = "0."+str(dec)
+    p, q = n.split(".")
+    i = 0
+    while(n != "1.0" and i != 5):
+        n = str(n)
+        p, q = n.split(".")
+        n = "0."+q
+        n = float(n)
+        n *= 2
+        n = str(n)
+        p, q = n.split(".")
+        res += str(p)
+        i += 1
+    p, q = res.split(".")
+    exp = len(p)+2
+    res = p[0]+"."+p[1:]+q
+    man = (res.split("."))[1]
+    man = man[:5]
+    exp = bin(exp).lstrip("0b")
+    while(len(exp) < 3):
+        exp = "0"+exp
+    while(len(man) < 5):
+        man += "0"
+    final = exp+man
+    return final
 
 def typeA(command: list):
     if len(command) != 4:
@@ -168,13 +202,22 @@ def typeB(command: list):
         return ["Error", "Illegal flag exception"]
     else:
         out.append(regMem[command[1]])
-    try:
-        num = int(command[2][1:])
-    except:
-        return ["Error", "Invalid immediate value"]
-    if num < 0 or num > 255:
+    if "." not in command[2][1:]:
+        try:
+            num = int(command[2][1:])
+        except:
+            return ["Error", "Invalid immediate value"]
+        if num < 0 or num > 255:
             return ["Error", "Illegal immediate value"]
-    out.append(decimalToBinary(num))
+        out.append(decimalToBinary(num))
+    else:
+        try:
+            num = float(command[2][1:])
+        except:
+            return ["Error", "Invalid immediate value"]
+        if num < 0 or num > 255:
+            return ["Error", "Illegal immediate value"]
+        out.append(float_bin(num))
     return out
 
 def typeC(command: list):
@@ -232,7 +275,7 @@ def typeF(command: list):
 
 output = []
 
-wee = 0
+wee = 0 
 for i in commands:
     # sys.stdout.write(wee, lineNo[wee], i)
     pc = lineNo[wee]
