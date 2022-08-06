@@ -28,7 +28,7 @@ def decimalToBinary(n, limit: int):
 def float_bin2dec(num: str):
     exp = num[:3]
     man = 0.0
-    exp = int(exp, 2)-3
+    exp = int(exp, 2)
     for i in range(5):
         if num[3+i] == "1":
             man += 2**(-int(i+1))
@@ -53,7 +53,7 @@ def float_dec2bin(number):
         res += str(p)
         i += 1
     p, q = res.split(".")
-    exp = len(p)+2
+    exp = len(p)-1
     res = p[0]+"."+p[1:]+q
     man = (res.split("."))[1]
     man = man[:5]
